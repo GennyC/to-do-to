@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>To Do App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Do To Do</h2>
+    <a href="/">My Tasks</a>
+    <a href="#">To Do</a>
+    <a href="#">In Progress</a>
+    <a href="#">Done</a>
+</div>
+
+<div class="content">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
