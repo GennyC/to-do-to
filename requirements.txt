@@ -1,9 +1,4 @@
-Flask
-mysql-connector-python
-gunicorn
-
-django>=5.2,<5.3
-gunicorn>=23,<24
-dj-database-url>=3,<4
-whitenoise>=6,<7
-requests
+Flask==2.3.3
+mysql-connector-python==8.1.0
+gunicorn==20.1.0
+Werkzeug==2.3.7
