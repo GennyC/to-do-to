@@ -1,29 +1,71 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Tasks</h1>
-
-<form action="/add" method="POST" class="task-form">
-    <input name="title" placeholder="Task title" required>
-    <input name="description" placeholder="Description">
-    <input type="date" name="due_date">
-    <button type="submit">Add Task</button>
-</form>
-
-<div class="task-container">
-    {% for t in tasks %}
-    <div class="task-card {{ t.status|lower|replace(' ','-') }}">
-        <h3>{{ t.title }}</h3>
-        <p>{{ t.description }}</p>
-        <small>Due: {{ t.due_date }}</small><br>
-
-        <div class="actions">
-            <a href="/update/{{ t.id }}/To Do">To Do</a>
-            <a href="/update/{{ t.id }}/In Progress">In Progress</a>
-            <a href="/update/{{ t.id }}/Done">Done</a>
+<!-- Tasks Due This Week -->
+<div class="tasks-section">
+    <h2>Tasks Due This Week ({{ week_tasks|length }})</h2>
+    <div class="task-container">
+        {% for t in week_tasks %}
+        <div class="task-card {{ t.status|lower|replace(' ','-') }}">
+            <h3>{{ t.title }}</h3>
+            <p>{{ t.description }}</p>
+            <small>Due: {{ t.due_date.strftime('%B %d, %Y') if t.due_date else 'No due date' }}</small>
+            <div class="actions">
+                <a href="/update/{{ t.id }}/To Do">To Do</a>
+                <a href="/update/{{ t.id }}/In Progress">In Progress</a>
+                <a href="/update/{{ t.id }}/Done">Done</a>
+            </div>
         </div>
+        {% else %}
+        <p class="no-tasks">No tasks due this week.</p>
+        {% endfor %}
     </div>
-    {% endfor %}
+</div>
+
+<hr class="section-divider">
+
+<!-- Tasks Due This Month -->
+<div class="tasks-section">
+    <h2>Tasks Due This Month ({{ month_tasks|length }})</h2>
+    <div class="task-container">
+        {% for t in month_tasks %}
+        <div class="task-card {{ t.status|lower|replace(' ','-') }}">
+            <h3>{{ t.title }}</h3>
+            <p>{{ t.description }}</p>
+            <small>Due: {{ t.due_date.strftime('%B %d, %Y') if t.due_date else 'No due date' }}</small>
+            <div class="actions">
+                <a href="/update/{{ t.id }}/To Do">To Do</a>
+                <a href="/update/{{ t.id }}/In Progress">In Progress</a>
+                <a href="/update/{{ t.id }}/Done">Done</a>
+            </div>
+        </div>
+        {% else %}
+        <p class="no-tasks">No tasks due this month.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- All Tasks -->
+<div class="tasks-section">
+    <h2>All Tasks ({{ all_tasks|length }})</h2>
+    <div class="task-container">
+        {% for t in all_tasks %}
+        <div class="task-card {{ t.status|lower|replace(' ','-') }}">
+            <h3>{{ t.title }}</h3>
+            <p>{{ t.description }}</p>
+            <small>Due: {{ t.due_date.strftime('%B %d, %Y') if t.due_date else 'No due date' }}</small>
+            <div class="actions">
+                <a href="/update/{{ t.id }}/To Do">To Do</a>
+                <a href="/update/{{ t.id }}/In Progress">In Progress</a>
+                <a href="/update/{{ t.id }}/Done">Done</a>
+            </div>
+        </div>
+        {% else %}
+        <p class="no-tasks">No tasks found.</p>
+        {% endfor %}
+    </div>
 </div>
 
 {% endblock %}

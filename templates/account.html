@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="account-container">
+    <div class="account-header">
+        <h1>My Account</h1>
+    </div>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="account-grid">
+        <!-- Profile Information Card -->
+        <div class="account-card">
+            <div class="card-header">
+                <h2>Profile Information</h2>
+            </div>
+            <div class="card-content">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Full Name</span>
+                        <span class="info-value">{{ user.nombre }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">{{ user.email }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Member Since</span>
+                        <span class="info-value">{{ user.creado_en.strftime('%B %d, %Y') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Name Card -->
+        <div class="account-card">
+            <div class="card-header">
+                <h2>Update Name</h2>
+            </div>
+            <div class="card-content">
+                <form method="POST" action="{{ url_for('update_name') }}" class="account-form">
+                    <div class="form-group">
+                        <label for="nombre">New Full Name</label>
+                        <input type="text" id="nombre" name="nombre" value="{{ user.nombre }}" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Update Name</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Update Password Card -->
+        <div class="account-card">
+            <div class="card-header">
+                <h2>Change Password</h2>
+            </div>
+            <div class="card-content">
+                <form method="POST" action="{{ url_for('update_password') }}" class="account-form">
+                    <div class="form-group">
+                        <label for="current_password">Current Password</label>
+                        <input type="password" id="current_password" name="current_password" placeholder="Enter current password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_password">New Password</label>
+                        <input type="password" id="new_password" name="new_password" placeholder="Enter new password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm New Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm new password" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn-primary">Update Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

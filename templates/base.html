@@ -7,16 +7,140 @@
 <body>
 
 <div class="sidebar">
-    <h2>Do To Do</h2>
-    <a href="/">My Tasks</a>
-    <a href="#">To Do</a>
-    <a href="#">In Progress</a>
-    <a href="#">Done</a>
+    <div class="sidebar-header">
+        <h2>Do To Do</h2>
+        <div class="user-info">
+            <div class="user-avatar">
+                {{ user_name[0]|upper }}
+            </div>
+            <div class="user-details">
+                <span class="user-name">{{ user_name }}</span>
+                <span class="user-email">{{ session.user_email if session.user_email else 'User' }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <nav class="sidebar-nav">
+        <a href="{{ url_for('account') }}" class="nav-item {% if current_filter == 'account' %}active{% endif %}">
+            <span class="nav-icon">👤</span>
+            <span class="nav-text">My Account</span>
+        </a>
+        <a href="/home" class="nav-item {% if current_filter == 'home' %}active{% endif %}">
+            <span class="nav-icon">📊</span>
+            <span class="nav-text">All Tasks</span>
+        </a>
+        <a href="/todo" class="nav-item {% if current_filter == 'todo' %}active{% endif %}">
+            <span class="nav-icon">📝</span>
+            <span class="nav-text">To Do</span>
+        </a>
+        <a href="/in-progress" class="nav-item {% if current_filter == 'in-progress' %}active{% endif %}">
+            <span class="nav-icon">⚡</span>
+            <span class="nav-text">In Progress</span>
+        </a>
+        <a href="/done" class="nav-item {% if current_filter == 'done' %}active{% endif %}">
+            <span class="nav-icon">✅</span>
+            <span class="nav-text">Done</span>
+        </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+        <a href="{{ url_for('logout') }}" class="logout-btn">
+            <span class="nav-icon">🚪</span>
+            <span class="nav-text">Logout</span>
+        </a>
+    </div>
 </div>
 
-<div class="content">
-    {% block content %}{% endblock %}
+<div class="main-content">
+    <!-- Updated Header with User Info and Logout -->
+    <header class="main-header">
+        <div class="week-display">
+            <span id="current-week"></span>
+        </div>
+        <div class="header-controls">
+            <div class="search-container">
+                <input type="text" id="search-tasks" placeholder="Search tasks...">
+            </div>
+
+            <button class="new-task-btn" onclick="openNewTaskModal()">New Task</button>
+                        <div class="user-header-info">
+                <span class="user-greeting">Hello, {{ user_name }}</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
 </div>
 
+<!-- New Task Modal and scripts remain the same -->
+<div id="newTaskModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeNewTaskModal()">&times;</span>
+        <h2>Create New Task</h2>
+        <form id="newTaskForm" action="/add" method="POST">
+            <div class="form-group">
+                <label for="title">Task Title *</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="due_date">Due Date</label>
+                <input type="date" id="due_date" name="due_date">
+            </div>
+            <div class="form-actions">
+                <button type="button" onclick="closeNewTaskModal()">Cancel</button>
+                <button type="submit">Create Task</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="delete-modal">
+    <div class="delete-modal-content">
+        <h3>Confirm Deletion</h3>
+        <p>Are you sure you want to delete this task? This action cannot be undone.</p>
+        <div class="delete-modal-buttons">
+            <button id="confirmDeleteBtn" class="delete-confirm-btn">Yes, Delete</button>
+            <button onclick="closeDeleteModal()" class="delete-cancel-btn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let taskToDelete = null;
+
+function confirmDelete(taskId) {
+    taskToDelete = taskId;
+    document.getElementById('deleteModal').style.display = 'block';
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+    taskToDelete = null;
+}
+
+// Handle the actual deletion
+document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+    if (taskToDelete) {
+        window.location.href = `/delete/${taskToDelete}`;
+    }
+});
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('deleteModal');
+    if (event.target === modal) {
+        closeDeleteModal();
+    }
+}
+</script>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

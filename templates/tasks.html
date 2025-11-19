@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="tasks-section">
+    <h1>{{ title }}</h1>
+    
+    {% if grouped_tasks %}
+        {# Monthly grouped view #}
+        {% for month_year, tasks in grouped_tasks.items() %}
+        <div class="month-section">
+            <h2>{{ month_year }} ({{ tasks|length }})</h2>
+            <div class="task-container">
+                {% for t in tasks %}
+                <div class="task-card {{ t.status|lower|replace(' ','-') }}">
+    <h3>{{ t.title }}</h3>
+    <p>{{ t.description }}</p>
+    <small>Due: {{ t.due_date.strftime('%B %d, %Y') if t.due_date else 'No due date' }}</small>
+    
+    <div class="actions">
+        <select class="status-dropdown" data-task-id="{{ t.id }}" onchange="updateStatus(this)">
+            <option value="To Do" {% if t.status == 'To Do' %}selected{% endif %}>To Do</option>
+            <option value="In Progress" {% if t.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+            <option value="Done" {% if t.status == 'Done' %}selected{% endif %}>Done</option>
+        </select>
+        
+        <button class="delete-btn" onclick="confirmDelete({{ t.id }})" title="Delete Task">
+            🗑️
+        </button>
+    </div>
+</div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        {% if not loop.last %}
+        <hr class="section-divider">
+        {% endif %}
+        {% else %}
+        <p class="no-tasks">No {{ title.lower() }} found.</p>
+        {% endfor %}
+    
+    {% else %}
+        {# Simple task list view #}
+        <div class="task-container">
+            {% for t in tasks %}
+            <div class="task-card {{ t.status|lower|replace(' ','-') }}">
+    <h3>{{ t.title }}</h3>
+    <p>{{ t.description }}</p>
+    <small>Due: {{ t.due_date.strftime('%B %d, %Y') if t.due_date else 'No due date' }}</small>
+    
+    <div class="actions">
+        <select class="status-dropdown" data-task-id="{{ t.id }}" onchange="updateStatus(this)">
+            <option value="To Do" {% if t.status == 'To Do' %}selected{% endif %}>To Do</option>
+            <option value="In Progress" {% if t.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+            <option value="Done" {% if t.status == 'Done' %}selected{% endif %}>Done</option>
+        </select>
+        
+        <button class="delete-btn" onclick="confirmDelete({{ t.id }})" title="Delete Task">
+            🗑️
+        </button>
+    </div>
+</div>
+            {% else %}
+            <p class="no-tasks">No {{ title.lower() }} found.</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}
